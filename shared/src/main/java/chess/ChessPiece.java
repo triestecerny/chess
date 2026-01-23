@@ -88,7 +88,67 @@ public class ChessPiece {
             chessMoves.addAll(pieceMovesDiagonal1);
             return chessMoves;
         }
+        //KNIGHT
+        if (piece.getPieceType() == PieceType.KNIGHT) {
+            Collection<ChessMove> chessMovesL = this.pieceMovesL(board, myPosition, null);
+            List<ChessMove> chessMoves = new ArrayList<>();
+            chessMoves.addAll(chessMovesL);
+            return chessMoves;
+        }
         return List.of();
+    }
+
+    private Collection<ChessMove> pieceMovesL(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
+        Collection<ChessMove> chessMoves = new ArrayList<>();
+        //up left, up right
+        {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() -1);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+            newPosition = new ChessPosition(myPosition.getRow()-2, myPosition.getColumn()+1 );
+            if(newPosition.validate()){
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
+        //left up and right up
+        {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+            newPosition = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+2);
+            if(newPosition.validate()){
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
+        //left down right down
+        {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+            newPosition = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+2);
+            if(newPosition.validate()){
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
+        //up right
+        {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() -1);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+            newPosition = new ChessPosition(myPosition.getRow()+2, myPosition.getColumn()+1);
+            if(newPosition.validate()){
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
+        return chessMoves;
     }
     private Collection<ChessMove> pieceMovesDiagonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
