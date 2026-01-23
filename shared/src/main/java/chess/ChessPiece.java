@@ -56,6 +56,7 @@ public class ChessPiece {
         if (piece.getPieceType() == PieceType.BISHOP) {
             return this.pieceMovesDiagonal(board, myPosition, null);
         }
+        //ROOK
         if (piece.getPieceType() == PieceType.ROOK) {
             Collection<ChessMove> chessMovesVertical = this.pieceMovesVertical(board, myPosition, null);
             Collection<ChessMove> chessMovesHorizontal = this.pieceMovesHorizontal(board,myPosition,null);
