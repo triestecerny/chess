@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -56,44 +54,87 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.BISHOP) {
+            return this.pieceMovesDiagonal(board, myPosition, null);
+        }
+        return List.of();
+    }
+    private Collection<ChessMove> pieceMovesDiagonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
+        Collection<ChessMove> chessMoves = new ArrayList<>();
 
-            Collection<ChessMove> moves = new java.util.ArrayList<>();
+        int currentRowChange = 1;
+        int currentColumnChange = 1;
 
-            int[][] directions = {
-                    {1, 1},
-                    {1, -1},
-                    {-1, 1},
-                    {-1, -1}
-            };
+        while (currentRowChange >= 1 && currentRowChange < 8 && currentColumnChange >= 1 && currentColumnChange < 8) {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + currentRowChange, myPosition.getColumn() + currentColumnChange);
 
-            for (int[] dir : directions) {
-                int row = myPosition.getRow() + dir[0];
-                int col = myPosition.getColumn() + dir[1];
-
-                while (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
-
-                    ChessPosition next = new ChessPosition(row, col);
-                    ChessPiece occupying = board.getPiece(next);
-
-                    if (occupying == null) {
-                        moves.add(new ChessMove(myPosition, next, null));
-                    } else {
-                        if (occupying.getTeamColor() != pieceColor) {
-                            moves.add(new ChessMove(myPosition, next, null));
-                        }
-                        break;
-                    }
-
-                    row += dir[0];
-                    col += dir[1];
-                }
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
             }
 
-            return moves;
+            currentRowChange++;
+            currentColumnChange++;
+        }
+        //Left and up
+        int upRow = 1;
+        int leftCol = 1;
+        while (upRow >= 1 && upRow < 8 && leftCol >= 1 && leftCol < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + upRow, myPosition.getColumn() - leftCol);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            upRow++;
+            leftCol++;
+        }
+        int downRow = 1;
+        int leftCol2 = 1;
+        while (downRow >= 1 && downRow < 8 && leftCol >= 1 && leftCol < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - downRow, myPosition.getColumn() - leftCol2);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            downRow++;
+            leftCol2++;
+        }
+        int downRow2 = 1;
+        int rightCol = 1;
+        while (downRow2 >= 1 && downRow2 < 8 && leftCol >= 1 && leftCol < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - downRow2, myPosition.getColumn() + rightCol);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            downRow2++;
+            rightCol++;
         }
 
-    return List.of();
-}
+        return chessMoves;
+    }
+
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessPiece piece = board.getPiece(myPosition);
+        if (piece.getPieceType() == PieceType.ROOK) {
+            return this.pieceMovesHorizonal(board, myPosition, null);
+        }
+        return List.of();
+    }
+    private Collection<ChessMove> pieceMovesHorizonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
+        Collection<ChessMove> chessMoves = new ArrayList<>();
+
+        int rowLesser
+
 
     @Override
     public boolean equals(Object o) {
