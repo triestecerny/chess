@@ -56,6 +56,14 @@ public class ChessPiece {
         if (piece.getPieceType() == PieceType.BISHOP) {
             return this.pieceMovesDiagonal(board, myPosition, null);
         }
+        if (piece.getPieceType() == PieceType.ROOK) {
+            Collection<ChessMove> chessMovesVertical = this.pieceMovesVertical(board, myPosition, null);
+            Collection<ChessMove> chessMovesHorizontal = this.pieceMovesHorizontal(board,myPosition,null);
+            List<ChessMove> chessMoves = new ArrayList<>();
+            chessMoves.addAll(chessMovesVertical);
+            chessMoves.addAll(chessMovesHorizontal);
+            return chessMoves;
+        }
         return List.of();
     }
     private Collection<ChessMove> pieceMovesDiagonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
@@ -123,19 +131,64 @@ public class ChessPiece {
         return chessMoves;
     }
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == PieceType.ROOK) {
-            return this.pieceMovesHorizonal(board, myPosition, null);
-        }
-        return List.of();
-    }
-    private Collection<ChessMove> pieceMovesHorizonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
+    private Collection<ChessMove> pieceMovesVertical(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
 
-        int rowLesser
+        int rowMove = 1;
+        while (rowMove >= 1 && rowMove < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - rowMove, myPosition.getColumn());
 
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            rowMove++;
+        }
+        rowMove= 1;
+        while (rowMove >= 1 && rowMove < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowMove, myPosition.getColumn());
 
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            rowMove++;
+        }
+        return chessMoves;
+    }
+    private Collection<ChessMove> pieceMovesHorizontal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
+        Collection<ChessMove> chessMoves = new ArrayList<>();
+
+        int colMove = 1;
+        while (colMove >= 1 && colMove < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - colMove);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            colMove++;
+        }
+        colMove = 1;
+        while (colMove >= 1 && colMove < 8) {
+            ;
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + colMove);
+
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else {
+                break;
+            }
+            colMove++;
+        }
+        return chessMoves;
+    }
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ChessPiece that)) {
