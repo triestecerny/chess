@@ -55,11 +55,45 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == PieceType.BISHOP){
-            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
+        if (piece.getPieceType() == PieceType.BISHOP) {
+
+            Collection<ChessMove> moves = new java.util.ArrayList<>();
+
+            int[][] directions = {
+                    {1, 1},
+                    {1, -1},
+                    {-1, 1},
+                    {-1, -1}
+            };
+
+            for (int[] dir : directions) {
+                int row = myPosition.getRow() + dir[0];
+                int col = myPosition.getColumn() + dir[1];
+
+                while (row >= 1 && row <= 8 && col >= 1 && col <= 8) {
+
+                    ChessPosition next = new ChessPosition(row, col);
+                    ChessPiece occupying = board.getPiece(next);
+
+                    if (occupying == null) {
+                        moves.add(new ChessMove(myPosition, next, null));
+                    } else {
+                        if (occupying.getTeamColor() != pieceColor) {
+                            moves.add(new ChessMove(myPosition, next, null));
+                        }
+                        break;
+                    }
+
+                    row += dir[0];
+                    col += dir[1];
+                }
+            }
+
+            return moves;
         }
-        return List.of();
-    }
+
+    return List.of();
+}
 
     @Override
     public boolean equals(Object o) {
