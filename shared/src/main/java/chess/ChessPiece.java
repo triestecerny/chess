@@ -227,7 +227,7 @@ public class ChessPiece {
 
             MoveState ms = validateMove(board, this, myPosition, newPosition);
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
             } else if (ms == MoveState.CAPTURE) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
@@ -246,7 +246,7 @@ public class ChessPiece {
 
             MoveState ms = validateMove(board, this, myPosition, newPosition);
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
             } else if (ms == MoveState.CAPTURE) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
@@ -265,7 +265,7 @@ public class ChessPiece {
 
             MoveState ms = validateMove(board, this, myPosition, newPosition);
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
             } else if (ms == MoveState.CAPTURE) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
@@ -288,8 +288,13 @@ public class ChessPiece {
             ;
             ChessPosition newPosition = new ChessPosition(myPosition.getRow() - rowMove, myPosition.getColumn());
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            MoveState ms = validateMove(board, this, myPosition, newPosition);
+
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else if (ms == MoveState.CAPTURE) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+                break;
             } else {
                 break;
             }
@@ -300,8 +305,13 @@ public class ChessPiece {
             ;
             ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowMove, myPosition.getColumn());
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            MoveState ms = validateMove(board, this, myPosition, newPosition);
+
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else if (ms == MoveState.CAPTURE) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+                break;
             } else {
                 break;
             }
@@ -317,8 +327,13 @@ public class ChessPiece {
             ;
             ChessPosition newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - colMove);
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            MoveState ms = validateMove(board, this, myPosition, newPosition);
+
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else if (ms == MoveState.CAPTURE) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+                break;
             } else {
                 break;
             }
@@ -329,8 +344,13 @@ public class ChessPiece {
             ;
             ChessPosition newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + colMove);
 
-            if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+            MoveState ms = validateMove(board, this, myPosition, newPosition);
+
+            if (ms == MoveState.VALID) {
                 chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            } else if (ms == MoveState.CAPTURE) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+                break;
             } else {
                 break;
             }
