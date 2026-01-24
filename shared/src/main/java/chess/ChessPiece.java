@@ -416,6 +416,14 @@ public class ChessPiece {
             return false;
         }
 
+        // if the piece in the new position is the same color I can't move here
+        var newChessPiece = board.getPiece(newChessPositon);
+        if (newChessPiece != null) {
+            if (newChessPiece.getTeamColor() == chessPiece.getTeamColor()){
+                return false;
+            }
+        }
+
 
         return true;
     }
