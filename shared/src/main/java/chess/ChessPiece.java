@@ -422,6 +422,11 @@ public class ChessPiece {
             if (newChessPiece.getTeamColor() == chessPiece.getTeamColor()){
                 return false;
             }
+            //we know the color is the opposite
+            //we can not take the opposing colors king
+            if(newChessPiece.getPieceType() == PieceType.KING){
+                return false;
+            }
         }
 
 
