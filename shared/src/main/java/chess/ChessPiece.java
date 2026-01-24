@@ -135,46 +135,60 @@ public class ChessPiece {
         //up left, up right
         ChessPosition newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() - 1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        MoveState ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
         newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn() + 1 );
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID){
+
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
         //left up and right up
         newPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 2);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
         //
         newPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 2);
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID){
+
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
         //left down right down
         newPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 2);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
+
         newPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 2);
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID){
+
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
         //up right
         newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() - 1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
+
         newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn() + 1);
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID){
+
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -311,7 +325,8 @@ public class ChessPiece {
 
         ChessPosition newPosition = new ChessPosition(myPosition.getRow() - rowMove1, myPosition.getColumn());
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        MoveState ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -321,7 +336,8 @@ public class ChessPiece {
 
         newPosition = new ChessPosition(myPosition.getRow() + rowMovePos1, myPosition.getColumn());
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -333,14 +349,16 @@ public class ChessPiece {
         int colMoveNeg1 = 1;
         ChessPosition newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - colMoveNeg1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        MoveState ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
         int colMovePos1 = 1;
         newPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + colMovePos1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
         return chessMoves;
@@ -355,7 +373,8 @@ public class ChessPiece {
 
         ChessPosition newPosition = new ChessPosition(myPosition.getRow() + currentRowChange1, myPosition.getColumn() + currentColumnChange1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        MoveState ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -365,7 +384,8 @@ public class ChessPiece {
 
         newPosition = new ChessPosition(myPosition.getRow() + upRow1, myPosition.getColumn() - leftCol1);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -374,7 +394,8 @@ public class ChessPiece {
 
         newPosition = new ChessPosition(myPosition.getRow() - downRow1, myPosition.getColumn() - leftCol21);
 
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -382,7 +403,9 @@ public class ChessPiece {
         int rightCol2 = 1;
 
         newPosition = new ChessPosition(myPosition.getRow() - downRow21, myPosition.getColumn() + rightCol2);
-        if (validateMove(board, this, myPosition, newPosition) == MoveState.VALID) {
+
+        ms = validateMove(board, this, myPosition, newPosition);
+        if (ms == MoveState.VALID || ms == MoveState.CAPTURE) {
             chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
         }
 
@@ -433,8 +456,9 @@ public class ChessPiece {
             if (newChessPiece.getPieceType() == PieceType.KING) {
                 return MoveState.INVALID;
             }
-        }
 
+            return MoveState.CAPTURE;
+        }
 
         return MoveState.VALID;
     }
