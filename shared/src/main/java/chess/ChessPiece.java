@@ -127,21 +127,20 @@ public class ChessPiece {
                 } else {
                     chessMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
-            }
-
-            // move off home 2 space
-            if (myPosition.getRow() == 2) {
-                newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
-                ms = validateMove(board, this, myPosition, newPosition);
-                if (ms == MoveState.VALID) {
-                    //if i am on row 8 promote to queen,rook,knight,bishop
-                    if (newPosition.getRow() == 8){
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                    } else {
-                        chessMoves.add(new ChessMove(myPosition, newPosition, null));
+                // move off home 2 space
+                if (myPosition.getRow() == 2) {
+                    newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+                    ms = validateMove(board, this, myPosition, newPosition);
+                    if (ms == MoveState.VALID) {
+                        //if i am on row 8 promote to queen,rook,knight,bishop
+                        if (newPosition.getRow() == 8){
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                        } else {
+                            chessMoves.add(new ChessMove(myPosition, newPosition, null));
+                        }
                     }
                 }
             }
@@ -191,20 +190,19 @@ public class ChessPiece {
                 } else {
                     chessMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
-            }
-
-            // move off home 2 space
-            if (myPosition.getRow() == 7) {
-                newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
-                ms = validateMove(board, this, myPosition, newPosition);
-                if (ms == MoveState.VALID) {
-                    if (newPosition.getRow() == 1){
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                        chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                    } else {
-                        chessMoves.add(new ChessMove(myPosition, newPosition, null));
+                // move off home 2 space
+                if (myPosition.getRow() == 7) {
+                    newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
+                    ms = validateMove(board, this, myPosition, newPosition);
+                    if (ms == MoveState.VALID) {
+                        if (newPosition.getRow() == 1){
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                            chessMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                        } else {
+                            chessMoves.add(new ChessMove(myPosition, newPosition, null));
+                        }
                     }
                 }
             }
