@@ -95,9 +95,34 @@ public class ChessPiece {
             chessMoves.addAll(chessMovesL);
             return chessMoves;
         }
+        if (piece.getPieceType() == PieceType.PAWN) {
+            Collection<ChessMove> chessMovesDoubleWhitePawn = this.pieceMovesDoubleUpWhitePawn(board, myPosition, piece.getPieceType(), ChessGame.TeamColor.WHITE);
+            List<ChessMove> chessMoves = new ArrayList<>();
+            chessMoves.addAll(chessMovesDoubleWhitePawn);
+            return chessMoves;
+        }
         return List.of();
     }
+    private Collection<ChessMove> pieceMovesDoubleUpWhitePawn(ChessBoard board, ChessPosition myPosition, PieceType pieceType, ChessGame.TeamColor color){
+        Collection<ChessMove> chessMoves = new ArrayList<>();
+        //rules for the pawn depending on color it can go up or down depending on what row 2,7 has the opportunity to move 2
+        //WHITE PAWNS
+        if (color == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+            if (newPosition.validate()){
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
+        //BLACK PAWNS
+        if (color == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7) {
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
+            if (newPosition.validate()) {
+                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
+            }
+        }
 
+        }
+}
     private Collection<ChessMove> pieceMovesL(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
         //up left, up right
@@ -356,29 +381,25 @@ public class ChessPiece {
 
              return chessMoves;
         }
+public boolean validateMove(ChessBoard board, ChessPiece chessPiece, ChessPostion currentChessPosition, ChessPosition newChessPositon) {
+    if (currentchessPosition.getRow > 8) {
+        return false;
+    }
 
+    if (currentchessPosition.getRow < 1) {
+        return false;
+    }
 
+    if (currentchessPosition.getColumn > 8) {
+        return false;
+    }
 
+    if (currentchessPosition.getColumn < 1) {
+        return false;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return true;
+}
 
 
 
