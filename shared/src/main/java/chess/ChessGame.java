@@ -10,7 +10,16 @@ import java.util.Collection;
  */
 public class ChessGame {
 
+    private TeamColor teamTurn;
+    private ChessBoard gameBoard;
+    private ChessBoard testBoard;
+
+
     public ChessGame() {
+        this.teamTurn = TeamColor.WHITE;
+        this.gameBoard = new ChessBoard();
+        gameBoard.resetBoard();
+        testBoard = null;
 
     }
 
