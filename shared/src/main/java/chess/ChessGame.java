@@ -100,7 +100,7 @@ public class ChessGame {
         }else {
             ChessBoard newBoard = this.board;
             ChessPiece pieceInQuestion = this.board.getPiece(move.getStartPosition());
-            newBoard.addPiece(move.getStartPosition(), null);
+            newBoard.removePiece(move.getStartPosition());
             newBoard.addPiece(move.getEndPosition(), pieceInQuestion);
             setBoard(newBoard);
         }
