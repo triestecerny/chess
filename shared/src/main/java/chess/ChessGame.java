@@ -45,6 +45,9 @@ public class ChessGame {
     public void setTeamTurn(TeamColor team) {
         this.turn = team;
     }
+    public TeamColor getTeamTurn() {
+        return turn;
+    }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -78,7 +81,7 @@ public class ChessGame {
             return null;
         else {
             for (ChessMove move : testBoard.getPiece(startPosition).pieceMoves(testBoard, startPosition)) {
-                if (suicide(move, testBoard)) {
+                if (!suicide(move, testBoard)) {
                     finalizedMoves.add(move);
                 }
             }
@@ -137,6 +140,9 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
+    public boolean isInCheck(TeamColor teamColor) {
+        return isInCheck(teamColor, board);
+    }
     public boolean isInCheck(TeamColor teamColor, ChessBoard testBoard) {
         ChessPosition kingPos = findKing(teamColor, testBoard);
         if (kingPos == null) return false;
