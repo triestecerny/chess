@@ -603,7 +603,7 @@ public class ChessPiece {
             //we know the color is the opposite
             //we can not take the opposing colors king
             if (newChessPiece.getPieceType() == PieceType.KING) {
-                return MoveState.INVALID;
+                return MoveState.CAPTURE;
             }
 
             return MoveState.CAPTURE;
