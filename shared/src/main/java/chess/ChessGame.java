@@ -114,6 +114,15 @@ public class ChessGame {
 
         ChessBoard newBoard = new ChessBoard(board);
         newBoard.removePiece(move.getStartPosition());
+
+        //PAWN PROMOTION
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if ((piece.getTeamColor() == TeamColor.WHITE && move.getEndPosition().getRow() == 8) ||
+                    (piece.getTeamColor() == TeamColor.BLACK && move.getEndPosition().getRow() == 1)) {
+                // Promote
+                piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            }
+        }
         newBoard.addPiece(move.getEndPosition(), piece);
 
         history.add(board);
