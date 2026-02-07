@@ -91,6 +91,9 @@ public class ChessGame {
         }
         return finalizedMoves;
     }
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        return validMoves(startPosition, board);
+    }
 
     /**
      * Makes a move in a chess game
