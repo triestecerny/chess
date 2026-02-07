@@ -21,6 +21,7 @@ public class ChessGame {
     public ChessGame() {
         this.turn = TeamColor.WHITE;
         this.board = new ChessBoard();
+        this.board.resetBoard();
 
     }
 
@@ -77,18 +78,16 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition, ChessBoard testBoard) {
         ArrayList<ChessMove> finalizedMoves = new ArrayList<>();
-        if (this.board.getPiece(startPosition) == null)
+
+        if (testBoard.getPiece(startPosition) == null)
             return null;
-        else {
-            for (ChessMove move : testBoard.getPiece(startPosition).pieceMoves(testBoard, startPosition)) {
-                if (!suicide(move, testBoard)) {
-                    finalizedMoves.add(move);
-                }
+
+        for (ChessMove move : testBoard.getPiece(startPosition).pieceMoves(testBoard, startPosition)) {
+            if (!suicide(move, testBoard)) {
+                finalizedMoves.add(move);
             }
         }
-        for (ChessMove move : finalizedMoves){
-            System.out.print(move.toString());
-        }
+
         return finalizedMoves;
     }
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
