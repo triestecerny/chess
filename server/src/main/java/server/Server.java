@@ -1,23 +1,24 @@
 package server;
 
-import io.javalin.Javalin;
+import io.javalin.*;
 
 public class Server {
 
-    private Javalin app;
+    private final Javalin javalin;
 
-    public int run(int port) {
-        app = Javalin.create();
+    public Server() {
+        javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        app.get("/", ctx -> ctx.result("Chess Server Running"));
+        // Register your endpoints and exception handlers here.
 
-        app.start(port);
-        return port;
+    }
+
+    public int run(int desiredPort) {
+        javalin.start(desiredPort);
+        return javalin.port();
     }
 
     public void stop() {
-        if (app != null) {
-            app.stop();
-        }
+        javalin.stop();
     }
 }
