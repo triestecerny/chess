@@ -34,4 +34,20 @@ public class UserService {
 
         return auth;
     }
+    public AuthData login(UserData user) throws DataAccessException {
+        // find the user
+        UserData confirmedUser = dataAccess.getUser(user.username());
+
+        // is user right? is the password right?
+        if (confirmedUser == null || !confirmedUser.password().equals(user.password())) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+
+        // new authToken
+        String authToken = UUID.randomUUID().toString();
+        AuthData auth = new AuthData(authToken, user.username());
+        dataAccess.createAuth(auth);
+
+        return auth;
+    }
 }

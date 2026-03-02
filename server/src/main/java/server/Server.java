@@ -12,6 +12,7 @@ public class Server {
     private final Javalin javalin;
     private final ClearService clearService;
     private final UserService userService;
+
     private final Gson gson = new Gson();
 
     public Server() {
@@ -24,6 +25,7 @@ public class Server {
         // Register endpoints here
         javalin.delete("/db", this::clear);
         javalin.post("/user", this::register);
+        javalin.post("/session", this::login);
     }
 
     private void clear(io.javalin.http.Context ctx) {
@@ -52,6 +54,16 @@ public class Server {
                 ctx.status(500);
             }
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+        }
+    }
+    private void login(io.javalin.http.Context ctx) {
+        try {
+            model.UserData user = gson.fromJson(ctx.body(), model.UserData.class);
+            model.AuthData auth = userService.login(user);
+            ctx.status(200).result(gson.toJson(auth));
+        } catch (DataAccessException e) {
+            // if login fails
+            ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
     }
     public int run(int desiredPort) {
