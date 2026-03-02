@@ -21,15 +21,19 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {}
-
-    @Override
-    public UserData getUser(String username) throws DataAccessException {
-        return null;
+    public void createUser(UserData user) throws DataAccessException {
+        users.put(user.username(), user);
     }
 
     @Override
-    public void createAuth(AuthData auth) throws DataAccessException {}
+    public UserData getUser(String username) throws DataAccessException {
+        return users.get(username);
+    }
+
+    @Override
+    public void createAuth(AuthData auth) throws DataAccessException {
+        auths.put(auth.authToken(), auth);
+    }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
