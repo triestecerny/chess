@@ -26,6 +26,7 @@ public class Server {
         javalin.delete("/db", this::clear);
         javalin.post("/user", this::register);
         javalin.post("/session", this::login);
+        javalin.delete("/session", this::logout);
     }
 
     private void clear(io.javalin.http.Context ctx) {
@@ -63,6 +64,18 @@ public class Server {
             ctx.status(200).result(gson.toJson(auth));
         } catch (DataAccessException e) {
             // if login fails
+            ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+        }
+    }
+    private void logout(io.javalin.http.Context ctx) {
+        try {
+            // read header
+            String authToken = ctx.header("Authorization");
+
+            userService.logout(authToken);
+
+            ctx.status(200).result("{}"); // Success returns empty JSON
+        } catch (DataAccessException e) {
             ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
     }
