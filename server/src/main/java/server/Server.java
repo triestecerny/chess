@@ -47,109 +47,61 @@ public class Server {
     }
     private void register(io.javalin.http.Context ctx) {
         try {
-            model.UserData user = gson.fromJson(ctx.body(), model.UserData.class);
-
-            model.AuthData auth = userService.register(user);
-
+            UserData user = gson.fromJson(ctx.body(), UserData.class);
+            AuthData auth = userService.register(user);
             ctx.status(200).result(gson.toJson(auth));
-
         } catch (DataAccessException e) {
-
-            if (e.getMessage().contains("bad request")) {
-                ctx.status(400);
-            } else if (e.getMessage().contains("already taken")) {
-                ctx.status(403);
-            } else {
-                ctx.status(500);
-            }
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void login(io.javalin.http.Context ctx) {
         try {
-            model.UserData user = gson.fromJson(ctx.body(), model.UserData.class);
-
-            model.AuthData auth = userService.login(user);
-
+            UserData user = gson.fromJson(ctx.body(), UserData.class);
+            AuthData auth = userService.login(user);
             ctx.status(200).result(gson.toJson(auth));
         } catch (DataAccessException e) {
-            //
-            if (e.getMessage().contains("bad request")) {
-                ctx.status(400);
-            } else {
-                ctx.status(401); // not authorized
-            }
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void logout(io.javalin.http.Context ctx) {
         try {
-            // read header
-            String authToken = ctx.header("Authorization");
-
-            userService.logout(authToken);
-
-            ctx.status(200).result("{}"); // Success returns empty JSON
+            userService.logout(ctx.header("Authorization"));
+            ctx.status(200).result("{}");
         } catch (DataAccessException e) {
-            ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void listGames(io.javalin.http.Context ctx) {
         try {
-            String authToken = ctx.header("Authorization");
-
-            // get all the games
-            java.util.Collection<model.GameData> games = gameService.listGames(authToken);
-            ctx.status(200).result(gson.toJson(java.util.Map.of("games", games)));
-
+            var games = gameService.listGames(ctx.header("Authorization"));
+            ctx.status(200).result(gson.toJson(Map.of("games", games)));
         } catch (DataAccessException e) {
-            ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void createGame(io.javalin.http.Context ctx) {
         try {
-            String authToken = ctx.header("Authorization");
+            String token = ctx.header("Authorization");
+            GameData req = gson.fromJson(ctx.body(), GameData.class);
 
-            // read through it
-            model.GameData gameRequest = gson.fromJson(ctx.body(), model.GameData.class);
-
-            // nulls?
-            if (gameRequest == null || gameRequest.gameName() == null || gameRequest.gameName().isEmpty()) {
-                ctx.status(400).result(gson.toJson(new ErrorResponse("Error: bad request")));
-                return;
+            // missing the game name
+            if (req == null || req.gameName() == null || req.gameName().isEmpty()) {
+                throw new DataAccessException("Error: bad request");
             }
 
-            int gameID = gameService.createGame(authToken, gameRequest.gameName());
-
-            ctx.status(200).result(gson.toJson(java.util.Map.of("gameID", gameID)));
-
+            int id = gameService.createGame(token, req.gameName());
+            ctx.status(200).result(gson.toJson(Map.of("gameID", id)));
         } catch (DataAccessException e) {
-            // 401 error
-            if (e.getMessage().contains("unauthorized")) {
-                ctx.status(401);
-            } else {
-                ctx.status(400);
-            }
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void joinGame(io.javalin.http.Context ctx) {
         try {
-            String authToken = ctx.header("Authorization");
-            JoinRequest joinReq = gson.fromJson(ctx.body(), JoinRequest.class);
-
-            gameService.joinGame(authToken, joinReq.playerColor(), joinReq.gameID());
-
+            JoinRequest req = gson.fromJson(ctx.body(), JoinRequest.class);
+            gameService.joinGame(ctx.header("Authorization"), req.playerColor(), req.gameID());
             ctx.status(200).result("{}");
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("unauthorized")) {
-                ctx.status(401);
-            } else if (e.getMessage().contains("already taken")) {
-                ctx.status(403);
-            } else {
-                ctx.status(400); // bad request
-            }
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+            handleException(ctx, e);
         }
     }
     private void handleException(io.javalin.http.Context ctx, DataAccessException e) {
