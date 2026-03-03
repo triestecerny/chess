@@ -35,6 +35,10 @@ public class UserService {
         return auth;
     }
     public AuthData login(UserData user) throws DataAccessException {
+
+        if (user == null || user.username() == null || user.password() == null) {
+            throw new DataAccessException("Error: bad request");
+        }
         // find the user
         UserData confirmedUser = dataAccess.getUser(user.username());
 
