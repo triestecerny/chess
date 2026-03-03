@@ -16,7 +16,7 @@ public class MemoryDataAccess implements DataAccess {
     private final Map<Integer, GameData> games = new HashMap<>();
 
     @Override
-    public void clear() throws DataAccessException {
+    public void clear() {
         users.clear();
         auths.clear();
         games.clear();
@@ -24,31 +24,31 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {
+    public void createUser(UserData user) {
         users.put(user.username(), user);
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username) {
         return users.get(username);
     }
 
     @Override
-    public void createAuth(AuthData auth) throws DataAccessException {
+    public void createAuth(AuthData auth) {
         auths.put(auth.authToken(), auth);
     }
 
     @Override
-    public AuthData getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) {
         return auths.get(authToken);
     }
 
     @Override
-    public void deleteAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) {
         auths.remove(authToken);
     }
     @Override
-    public int createGame(String gameName) throws DataAccessException {
+    public int createGame(String gameName) {
         // your own ID
         int gameID = nextID++;
 
@@ -58,16 +58,16 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
     @Override
-    public Collection<GameData> listGames() throws DataAccessException {
+    public Collection<GameData> listGames(){
         return games.values();
     }
     @Override
-    public void updateGame(GameData game) throws DataAccessException {
+    public void updateGame(GameData game) {
         games.put(game.gameID(), game);
     }
 }
