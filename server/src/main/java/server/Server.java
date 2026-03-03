@@ -6,19 +6,22 @@ import dataaccess.MemoryDataAccess;
 import service.ClearService;
 import service.UserService;
 import io.javalin.Javalin;
+import service.GameService;
 
 public class Server {
 
     private final Javalin javalin;
     private final ClearService clearService;
     private final UserService userService;
+    private final GameService gameService;
 
     private final Gson gson = new Gson();
 
     public Server() {
         MemoryDataAccess dataAccess = new MemoryDataAccess();
         clearService = new ClearService(dataAccess);
-        userService = new service.UserService(dataAccess);
+        userService = new UserService(dataAccess);
+        gameService = new GameService(dataAccess);
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
@@ -27,6 +30,7 @@ public class Server {
         javalin.post("/user", this::register);
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
+        javalin.get("/game", this::listGames);
     }
 
     private void clear(io.javalin.http.Context ctx) {
@@ -75,6 +79,20 @@ public class Server {
             userService.logout(authToken);
 
             ctx.status(200).result("{}"); // Success returns empty JSON
+        } catch (DataAccessException e) {
+            ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+        }
+    }
+    private void listGames(io.javalin.http.Context ctx) {
+        try {
+            String authToken = ctx.header("Authorization");
+
+            // Get the collection of games from the service
+            java.util.Collection<model.GameData> games = gameService.listGames(authToken);
+
+            // The spec requires: { "games": [ {...}, {...} ] }
+            ctx.status(200).result(gson.toJson(java.util.Map.of("games", games)));
+
         } catch (DataAccessException e) {
             ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
