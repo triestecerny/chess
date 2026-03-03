@@ -3,10 +3,10 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import service.ClearService;
-import service.UserService;
+import service.*;
 import io.javalin.Javalin;
-import service.GameService;
+import model.*;
+import java.util.Map;
 
 public class Server {
 
@@ -24,6 +24,7 @@ public class Server {
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
 
+        // start javalin
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register endpoints here
@@ -150,6 +151,20 @@ public class Server {
             }
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
+    }
+    private void handleException(io.javalin.http.Context ctx, DataAccessException e) {
+        String msg = e.getMessage();
+        int status = 500; // default error
+
+        if (msg.contains("bad request")) {
+            status = 400;
+        } else if (msg.contains("unauthorized")) {
+            status = 401;
+        } else if (msg.contains("already taken")) {
+            status = 403;
+        }
+
+        ctx.status(status).result(gson.toJson(Map.of("message", msg)));
     }
     public int run(int desiredPort) {
         javalin.start(desiredPort);
