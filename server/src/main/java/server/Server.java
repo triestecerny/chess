@@ -31,6 +31,7 @@ public class Server {
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
         javalin.get("/game", this::listGames);
+        javalin.post("/game", this::createGame);
     }
 
     private void clear(io.javalin.http.Context ctx) {
@@ -95,6 +96,22 @@ public class Server {
 
         } catch (DataAccessException e) {
             ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+        }
+    }
+    private void createGame(io.javalin.http.Context ctx) {
+        try {
+            String authToken = ctx.header("Authorization");
+            String gameName = gson.fromJson(ctx.body(), java.util.Map.class).get("gameName").toString();
+            int gameID = gameService.createGame(authToken, gameName);
+            ctx.status(200).result(gson.toJson(java.util.Map.of("gameID", gameID)));
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("unauthorized")) {
+                ctx.status(401).result(gson.toJson(new ErrorResponse(e.getMessage())));
+            } else if (e.getMessage().contains("bad request")) {
+                ctx.status(400).result(gson.toJson(new ErrorResponse(e.getMessage())));
+            } else {
+                ctx.status(500).result(gson.toJson(new ErrorResponse(e.getMessage())));
+            }
         }
     }
     public int run(int desiredPort) {
