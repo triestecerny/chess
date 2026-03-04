@@ -47,4 +47,37 @@ public class UserServiceTest {
 
         assertEquals("trieste", auth.username());
     }
+
+    @Test
+    void loginNegativeWrongPassword() throws DataAccessException {
+        var dao = new MemoryDataAccess();
+        var service = new UserService(dao);
+
+        service.register(new UserData("bob", "pass", "email"));
+
+        assertThrows(DataAccessException.class, () ->
+                service.login(new UserData("bob", "wrong", null))
+        );
+    }
+
+    @Test
+    void logoutPositive() throws DataAccessException {
+        var dao = new MemoryDataAccess();
+        var service = new UserService(dao);
+
+        var auth = service.register(new UserData("bob", "pass", "email"));
+        service.logout(auth.authToken());
+
+        assertNull(dao.getAuth(auth.authToken()));
+    }
+
+    @Test
+    void logoutNegativeInvalidToken() {
+        var dao = new MemoryDataAccess();
+        var service = new UserService(dao);
+
+        assertThrows(DataAccessException.class, () ->
+                service.logout("fake-token")
+        );
+    }
 }
