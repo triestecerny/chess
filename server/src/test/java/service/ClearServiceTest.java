@@ -10,11 +10,11 @@ public class ClearServiceTest {
     @Test
     void clearPositive() throws DataAccessException {
         var dao = new MemoryDataAccess();
-        dao.createUser(new model.UserData("bob", "pass", "email"));
+        dao.createUser(new model.UserData("trieste", "pass", "email"));
 
         var service = new ClearService(dao);
         service.clear();
 
-        assertNull(dao.getUser("bob"));
+        assertNull(dao.getUser("trieste"));
     }
 }
