@@ -4,7 +4,18 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 
-public class SqlUserDAO implements DataAccess {
+public class SqlUserDAO{
+
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE TABLE user";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (java.sql.SQLException e) {
+            throw new DataAccessException(String.format("Unable to clear user table: %s", e.getMessage()));
+        }
+    }
 
     public void createUser(UserData user) throws DataAccessException {
         // before saving

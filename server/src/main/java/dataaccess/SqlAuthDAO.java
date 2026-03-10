@@ -3,7 +3,18 @@ package dataaccess;
 import model.AuthData;
 import java.sql.SQLException;
 
-public class SqlAuthDAO implements DataAccess{
+public class SqlAuthDAO{
+
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE TABLE auth";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (java.sql.SQLException e) {
+            throw new DataAccessException(String.format("Unable to clear auth table: %s", e.getMessage()));
+        }
+    }
 
     public void createAuth(AuthData auth) throws DataAccessException {
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";

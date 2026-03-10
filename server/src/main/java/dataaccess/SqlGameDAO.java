@@ -10,6 +10,17 @@ import java.util.Collection;
 
 public class SqlGameDAO {
 
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE TABLE game";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (java.sql.SQLException e) {
+            throw new DataAccessException(String.format("Unable to clear game table: %s", e.getMessage()));
+        }
+    }
+
     private final Gson gson = new Gson();
 
     public int createGame(String gameName) throws DataAccessException {
