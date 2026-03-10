@@ -4,7 +4,7 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 
-public class SqlUserDAO {
+public class SqlUserDAO implements DataAccess {
 
     public void createUser(UserData user) throws DataAccessException {
         // before saving
