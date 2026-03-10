@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import dataaccess.DatabaseManager;
 import service.*;
 import io.javalin.Javalin;
 import model.*;
@@ -19,6 +20,14 @@ public class Server {
     private final Gson gson = new Gson();
 
     public Server() {
+
+        try {
+            DatabaseManager.configureDatabase();
+        } catch (DataAccessException e) {
+            System.out.printf("ERROR: Database initialization failed: %s%n", e.getMessage());
+        }
+
+
         MemoryDataAccess dataAccess = new MemoryDataAccess();
         clearService = new ClearService(dataAccess);
         userService = new UserService(dataAccess);
@@ -122,6 +131,7 @@ public class Server {
         javalin.start(desiredPort);
         return javalin.port();
     }
+
 
     public void stop() {
         javalin.stop();

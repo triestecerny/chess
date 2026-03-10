@@ -12,6 +12,21 @@ public class DatabaseManager {
     /*
      * Load the database information for the db.properties file.
      */
+
+    //tables for SQL
+    private static final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS user (
+              username VARCHAR(255) NOT NULL,
+              password VARCHAR(255) NOT NULL,
+              email VARCHAR(255) NOT NULL,
+              PRIMARY KEY (username)
+            )
+            """
+    };
+
+
+
     static {
         loadPropertiesFromResources();
     }
@@ -73,5 +88,19 @@ public class DatabaseManager {
         var host = props.getProperty("db.host");
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
+    }
+
+    // configureDatabase
+    public static void configureDatabase() throws DataAccessException { // throw statement
+        createDatabase();
+        try (var conn = getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+        }
     }
 }
