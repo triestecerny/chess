@@ -31,6 +31,18 @@ public class DatabaseManager {
                 PRIMARY KEY (authToken)
             )
             """
+            ,
+            //GAME TABLE
+            """
+            CREATE TABLE IF NOT EXISTS game (
+                gameID INT NOT NULL AUTO_INCREMENT,
+                whiteUsername VARCHAR(255),
+                blackUsername VARCHAR(255),
+                gameName VARCHAR(255) NOT NULL,
+                game TEXT NOT NULL,
+                PRIMARY KEY (gameID)
+             )
+            """
 
     };
 
