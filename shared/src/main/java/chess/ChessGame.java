@@ -159,22 +159,32 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         return isInCheck(teamColor, board);
     }
+   //Code readability fix!
+   // too nested need to flatten the code and create another method to call
     public boolean isInCheck(TeamColor teamColor, ChessBoard testBoard) {
         ChessPosition kingPos = findKing(teamColor, testBoard);
-        if (kingPos == null){
+        if (kingPos == null) {
             return false;
         }
 
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
-                ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece = testBoard.getPiece(pos);
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove move : piece.pieceMoves(testBoard, pos)) {
-                        if (move.getEndPosition().equals(kingPos)) {
-                            return true;
-                        }
-                    }
+                if (canPieceAttackKing(testBoard, i, j, teamColor, kingPos)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean canPieceAttackKing(ChessBoard board, int r, int c, TeamColor kingColor, ChessPosition kingPos) {
+        ChessPosition pos = new ChessPosition(r, c);
+        ChessPiece piece = board.getPiece(pos);
+
+        if (piece != null && piece.getTeamColor() != kingColor) {
+            for (ChessMove move : piece.pieceMoves(board, pos)) {
+                if (move.getEndPosition().equals(kingPos)) {
+                    return true;
                 }
             }
         }
