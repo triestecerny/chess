@@ -28,7 +28,7 @@ public class Server {
         }
 
 
-        MemoryDataAccess dataAccess = new MemoryDataAccess();
+        dataaccess.SqlDataAccess dataAccess = new dataaccess.SqlDataAccess();
         clearService = new ClearService(dataAccess);
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
