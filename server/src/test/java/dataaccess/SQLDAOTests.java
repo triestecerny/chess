@@ -18,7 +18,7 @@ public class SQLDAOTests {
         gameDAO.clear();
     }
 
-    //USER TESTS
+    //positive and negative user tests
     @Test
     void createUserPositive() throws DataAccessException {
         UserData user = new UserData("jimmy", "secret", "j@chess.com");
@@ -31,4 +31,19 @@ public class SQLDAOTests {
         UserData badUser = new UserData(null, null, null);
         assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
     }
+    // positive and negative auth tests
+    @Test
+    void createAuthPositive() throws DataAccessException {
+        AuthData auth = new AuthData("token-123", "jimmy");
+        assertDoesNotThrow(() -> authDAO.createAuth(auth));
+        assertEquals("jimmy", authDAO.getAuth("token-123").username());
+    }
+
+    @Test
+    void getAuthNegative() throws DataAccessException {
+        // token never actually created
+        assertNull(authDAO.getAuth("fake-token"));
+    }
+
+
 }
