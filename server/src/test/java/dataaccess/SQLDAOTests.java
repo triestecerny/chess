@@ -31,6 +31,7 @@ public class SQLDAOTests {
         UserData badUser = new UserData(null, null, null);
         assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
     }
+
     // positive and negative auth tests
     @Test
     void createAuthPositive() throws DataAccessException {
@@ -45,5 +46,16 @@ public class SQLDAOTests {
         assertNull(authDAO.getAuth("fake-token"));
     }
 
+    // positive and negative game tests
+    @Test
+    void createGamePositive() throws DataAccessException {
+        int id = gameDAO.createGame("Grandmaster Match");
+        assertTrue(id > 0);
+    }
 
+    @Test
+    void getGameNegative() throws DataAccessException {
+        // not allowed to get gamID 999
+        assertNull(gameDAO.getGame(999));
+    }
 }
