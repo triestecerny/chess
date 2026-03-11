@@ -114,6 +114,12 @@ public class Server {
     }
     private void handleException(io.javalin.http.Context ctx, DataAccessException e) {
         String msg = e.getMessage();
+
+        // check if error is already there if not add!
+        if (msg == null || !msg.startsWith("Error")) {
+            msg = "Error: " + msg;
+        }
+
         int status = 500; // default error
 
         if (msg.contains("bad request")) {
