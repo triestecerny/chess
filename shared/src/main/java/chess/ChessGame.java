@@ -235,7 +235,9 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(pos);
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> moves = validMoves(pos, board);
-                    if (moves != null && !moves.isEmpty()) return false;
+                    if (moves != null && !moves.isEmpty()){
+                        return false;
+                    }
                 }
             }
         }
