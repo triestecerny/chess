@@ -32,6 +32,17 @@ public class SQLDAOTests {
         assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
     }
 
+    @Test
+    void getUserPositive() throws DataAccessException {
+        userDAO.createUser(new UserData("jimmy", "secret", "j@c.com"));
+        assertNotNull(userDAO.getUser("jimmy"));
+    }
+
+    @Test
+    void getUserNegative() throws DataAccessException {
+        assertNull(userDAO.getUser("someone-who-does-not-exist"));
+    }
+
     // positive and negative auth tests
     @Test
     void createAuthPositive() throws DataAccessException {
@@ -41,9 +52,38 @@ public class SQLDAOTests {
     }
 
     @Test
+    void createAuthNegative() throws DataAccessException {
+        // duplicate token should throw
+        AuthData auth = new AuthData("token-123", "jimmy");
+        authDAO.createAuth(auth);
+        assertThrows(DataAccessException.class, () -> authDAO.createAuth(auth));
+    }
+
+    @Test
+    void getAuthPositive() throws DataAccessException {
+        authDAO.createAuth(new AuthData("real-token", "jimmy"));
+        AuthData result = authDAO.getAuth("real-token");
+        assertNotNull(result);
+        assertEquals("jimmy", result.username());
+    }
+
+    @Test
     void getAuthNegative() throws DataAccessException {
         // token never actually created
         assertNull(authDAO.getAuth("fake-token"));
+    }
+
+    @Test
+    void deleteAuthPositive() throws DataAccessException {
+        authDAO.createAuth(new AuthData("valid-token", "jimmy"));
+        assertDoesNotThrow(() -> authDAO.deleteAuth("valid-token"));
+        assertNull(authDAO.getAuth("valid-token"));
+    }
+
+    @Test
+    void deleteAuthNegative() throws DataAccessException {
+        // attempt delete
+        assertDoesNotThrow(() -> authDAO.deleteAuth("non-existent-token"));
     }
 
     // positive and negative game tests
@@ -54,10 +94,25 @@ public class SQLDAOTests {
     }
 
     @Test
+    void createGameNegative() throws DataAccessException {
+        // null name should throw
+        assertThrows(DataAccessException.class, () -> gameDAO.createGame(null));
+    }
+
+    @Test
+    void getGamePositive() throws DataAccessException {
+        int id = gameDAO.createGame("Real Game");
+        GameData result = gameDAO.getGame(id);
+        assertNotNull(result);
+        assertEquals("Real Game", result.gameName());
+    }
+
+    @Test
     void getGameNegative() throws DataAccessException {
         // not allowed to get gamID 999
         assertNull(gameDAO.getGame(999));
     }
+
     //listing and joining tests
     @Test
     void listGamesPositive() throws DataAccessException {
@@ -91,30 +146,9 @@ public class SQLDAOTests {
         // database still empty
         assertNull(gameDAO.getGame(12345));
     }
-    @Test
-    void deleteAuthPositive() throws DataAccessException {
-        authDAO.createAuth(new AuthData("valid-token", "jimmy"));
-        assertDoesNotThrow(() -> authDAO.deleteAuth("valid-token"));
-        assertNull(authDAO.getAuth("valid-token"));
-    }
 
     @Test
-    void deleteAuthNegative() throws DataAccessException {
-        // attempt delete
-        assertDoesNotThrow(() -> authDAO.deleteAuth("non-existent-token"));
-    }
-    @Test
-    void getUserPositive() throws DataAccessException {
-        userDAO.createUser(new UserData("jimmy", "secret", "j@c.com"));
-        assertNotNull(userDAO.getUser("jimmy"));
-    }
-
-    @Test
-    void getUserNegative() throws DataAccessException {
-        assertNull(userDAO.getUser("someone-who-does-not-exist"));
-    }
-    @Test
-    void clearTest() throws DataAccessException {
+    void clearPositive() throws DataAccessException {
         userDAO.createUser(new UserData("user", "pass", "email"));
         gameDAO.createGame("game");
 
@@ -123,5 +157,15 @@ public class SQLDAOTests {
 
         assertNull(userDAO.getUser("user"));
         assertTrue(gameDAO.listGames().isEmpty());
+    }
+
+    @Test
+    void clearNegative() throws DataAccessException {
+        // clearing already-empty tables should not throw
+        assertDoesNotThrow(() -> {
+            userDAO.clear();
+            authDAO.clear();
+            gameDAO.clear();
+        });
     }
 }

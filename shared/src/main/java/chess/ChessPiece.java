@@ -277,9 +277,9 @@ public class ChessPiece {
         return chessMoves;
     }
 
-    /** Slides a piece in one diagonal direction until blocked or off-board. */
-    private void slideDiagonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType,
-                               int rowDir, int colDir, Collection<ChessMove> chessMoves) {
+    /** Slides a piece repeatedly in one direction (row/col deltas) until blocked or off-board. Works for both diagonal and axis movement. */
+    private void slideDirection(ChessBoard board, ChessPosition myPosition, PieceType pieceType,
+                                int rowDir, int colDir, Collection<ChessMove> chessMoves) {
         int step = 1;
         while (step < 8) {
             ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowDir * step,
@@ -299,45 +299,25 @@ public class ChessPiece {
 
     private Collection<ChessMove> pieceMovesDiagonal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
-        slideDiagonal(board, myPosition, pieceType, 1, 1, chessMoves);
+        slideDirection(board, myPosition, pieceType, 1, 1, chessMoves);
         //Left and up
-        slideDiagonal(board, myPosition, pieceType, 1, -1, chessMoves);
-        slideDiagonal(board, myPosition, pieceType, -1, -1, chessMoves);
-        slideDiagonal(board, myPosition, pieceType, -1, 1, chessMoves);
+        slideDirection(board, myPosition, pieceType, 1, -1, chessMoves);
+        slideDirection(board, myPosition, pieceType, -1, -1, chessMoves);
+        slideDirection(board, myPosition, pieceType, -1, 1, chessMoves);
         return chessMoves;
-    }
-
-    /** Slides a piece along one axis direction until blocked or off-board. */
-    private void slideAxis(ChessBoard board, ChessPosition myPosition, PieceType pieceType,
-                           int rowDir, int colDir, Collection<ChessMove> chessMoves) {
-        int step = 1;
-        while (step < 8) {
-            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + rowDir * step,
-                    myPosition.getColumn() + colDir * step);
-            MoveState ms = validateMove(board, this, myPosition, newPosition);
-            if (ms == MoveState.VALID) {
-                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
-            } else if (ms == MoveState.CAPTURE) {
-                chessMoves.add(new ChessMove(myPosition, newPosition, pieceType));
-                break;
-            } else {
-                break;
-            }
-            step++;
-        }
     }
 
     private Collection<ChessMove> pieceMovesVertical(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
-        slideAxis(board, myPosition, pieceType, -1, 0, chessMoves);
-        slideAxis(board, myPosition, pieceType, 1, 0, chessMoves);
+        slideDirection(board, myPosition, pieceType, -1, 0, chessMoves);
+        slideDirection(board, myPosition, pieceType, 1, 0, chessMoves);
         return chessMoves;
     }
 
     private Collection<ChessMove> pieceMovesHorizontal(ChessBoard board, ChessPosition myPosition, PieceType pieceType) {
         Collection<ChessMove> chessMoves = new ArrayList<>();
-        slideAxis(board, myPosition, pieceType, 0, -1, chessMoves);
-        slideAxis(board, myPosition, pieceType, 0, 1, chessMoves);
+        slideDirection(board, myPosition, pieceType, 0, -1, chessMoves);
+        slideDirection(board, myPosition, pieceType, 0, 1, chessMoves);
         return chessMoves;
     }
 
