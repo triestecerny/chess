@@ -58,4 +58,70 @@ public class SQLDAOTests {
         // not allowed to get gamID 999
         assertNull(gameDAO.getGame(999));
     }
+    //listing and joining tests
+    @Test
+    void listGamesPositive() throws DataAccessException {
+        gameDAO.createGame("Game 1");
+        gameDAO.createGame("Game 2");
+        assertEquals(2, gameDAO.listGames().size());
+    }
+
+    @Test
+    void listGamesNegative() throws DataAccessException {
+        // return empty list
+        assertTrue(gameDAO.listGames().isEmpty());
+    }
+
+    @Test
+    void updateGamePositive() throws DataAccessException {
+        int id = gameDAO.createGame("Empty Game");
+        GameData updated = new GameData(id, "whitePlayer", null, "Empty Game", null);
+        assertDoesNotThrow(() -> gameDAO.updateGame(updated));
+        assertEquals("whitePlayer", gameDAO.getGame(id).whiteUsername());
+    }
+
+    @Test
+    void updateGameNegative() throws DataAccessException {
+        //try to update game ID
+        GameData fakeGame = new GameData(12345, "bad", "bad", "fake", null);
+
+        // throw?
+        assertDoesNotThrow(() -> gameDAO.updateGame(fakeGame));
+
+        // database still empty
+        assertNull(gameDAO.getGame(12345));
+    }
+    @Test
+    void deleteAuthPositive() throws DataAccessException {
+        authDAO.createAuth(new AuthData("valid-token", "jimmy"));
+        assertDoesNotThrow(() -> authDAO.deleteAuth("valid-token"));
+        assertNull(authDAO.getAuth("valid-token"));
+    }
+
+    @Test
+    void deleteAuthNegative() throws DataAccessException {
+        // attempt delete
+        assertDoesNotThrow(() -> authDAO.deleteAuth("non-existent-token"));
+    }
+    @Test
+    void getUserPositive() throws DataAccessException {
+        userDAO.createUser(new UserData("jimmy", "secret", "j@c.com"));
+        assertNotNull(userDAO.getUser("jimmy"));
+    }
+
+    @Test
+    void getUserNegative() throws DataAccessException {
+        assertNull(userDAO.getUser("someone-who-does-not-exist"));
+    }
+    @Test
+    void clearTest() throws DataAccessException {
+        userDAO.createUser(new UserData("user", "pass", "email"));
+        gameDAO.createGame("game");
+
+        userDAO.clear();
+        gameDAO.clear();
+
+        assertNull(userDAO.getUser("user"));
+        assertTrue(gameDAO.listGames().isEmpty());
+    }
 }
