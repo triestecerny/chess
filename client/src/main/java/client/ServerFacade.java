@@ -39,6 +39,9 @@ public class ServerFacade {
         if (stream == null) return "";
         return new String(stream.readAllBytes());
     }
+    public void clear() throws Exception {
+        makeRequest("DELETE", "/db", null, null, null);
+    }
     public record AuthData(String authToken, String username) {}
 
     public AuthData register(String username, String password, String email) throws Exception {
