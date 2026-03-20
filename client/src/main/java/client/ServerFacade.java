@@ -56,4 +56,11 @@ public class ServerFacade {
         var body = Map.of("gameName", gameName);
         makeRequest("POST", "/game", authToken, body, null);
     }
+    public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+    private record GamesResponse(GameData[] games) {}
+
+    public GameData[] listGames(String authToken) throws Exception {
+        var response = makeRequest("GET", "/game", authToken, null, GamesResponse.class);
+        return response.games();
+    }
 }
