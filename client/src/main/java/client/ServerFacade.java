@@ -49,4 +49,7 @@ public class ServerFacade {
         var body = Map.of("username", username, "password", password);
         return makeRequest("POST", "/session", null, body, AuthData.class);
     }
+    public void logout(String authToken) throws Exception {
+        makeRequest("DELETE", "/session", authToken, null, null);
+    }
 }
