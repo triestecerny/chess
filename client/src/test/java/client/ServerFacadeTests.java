@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class ServerFacadeTests {
 
     private static Server server;
@@ -28,33 +27,34 @@ public class ServerFacadeTests {
         facade.clear();
     }
 
-    // one negative and one positive test for register
     @Test
     void registerPositive() throws Exception {
-        var authData = facade.register("trieste", "passwor28", "trieste@email.com");
+        var authData = facade.register("player1", "password", "p1@email.com");
         assertNotNull(authData.authToken());
         assertTrue(authData.authToken().length() > 10);
     }
 
     @Test
     void registerNegative() throws Exception {
-        facade.register("trieste", "password28", "trieste@email.com");
-        assertThrows(Exception.class, () -> facade.register("trieste", "password28", "trieste@email.com"));
+        facade.register("player1", "password", "p1@email.com");
+        assertThrows(Exception.class, () -> facade.register("player1", "password", "p1@email.com"));
     }
+
     @Test
     void loginPositive() throws Exception {
-        facade.register("trieste", "password28", "trieste@gmail.com");
-        var authData = facade.login("trieste", "password28");
+        facade.register("player1", "password", "p1@email.com");
+        var authData = facade.login("player1", "password");
         assertNotNull(authData.authToken());
     }
 
     @Test
     void loginNegative() throws Exception {
-        assertThrows(Exception.class, () -> facade.login("trieste", "wrongpassword"));
+        assertThrows(Exception.class, () -> facade.login("player1", "wrongpassword"));
     }
+
     @Test
     void logoutPositive() throws Exception {
-        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
+        var authData = facade.register("player1", "password", "p1@email.com");
         facade.logout(authData.authToken());
     }
 
@@ -62,20 +62,22 @@ public class ServerFacadeTests {
     void logoutNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.logout("invalidtoken"));
     }
+
     @Test
     void createGamePositive() throws Exception {
-        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
-        facade.createGame(authData.authToken(), "trieste's game");
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame(authData.authToken(), "mygame");
     }
 
     @Test
     void createGameNegative() throws Exception {
-        assertThrows(Exception.class, () -> facade.createGame("invalidtoken", "trieste's game"));
+        assertThrows(Exception.class, () -> facade.createGame("invalidtoken", "mygame"));
     }
+
     @Test
     void listGamesPositive() throws Exception {
-        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
-        facade.createGame(authData.authToken(), "trieste's game");
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame(authData.authToken(), "mygame");
         var games = facade.listGames(authData.authToken());
         assertEquals(1, games.length);
     }
@@ -84,10 +86,11 @@ public class ServerFacadeTests {
     void listGamesNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.listGames("invalidtoken"));
     }
+
     @Test
     void joinGamePositive() throws Exception {
-        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
-        facade.createGame(authData.authToken(), "trieste's game");
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame(authData.authToken(), "mygame");
         var games = facade.listGames(authData.authToken());
         facade.joinGame(authData.authToken(), games[0].gameID(), "WHITE");
     }
@@ -96,5 +99,4 @@ public class ServerFacadeTests {
     void joinGameNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.joinGame("invalidtoken", 9999, "WHITE"));
     }
-
 }
