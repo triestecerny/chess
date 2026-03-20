@@ -52,4 +52,14 @@ public class ServerFacadeTests {
     void loginNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.login("trieste", "wrongpassword"));
     }
+    @Test
+    void logoutPositive() throws Exception {
+        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
+        facade.logout(authData.authToken());
+    }
+
+    @Test
+    void logoutNegative() throws Exception {
+        assertThrows(Exception.class, () -> facade.logout("invalidtoken"));
+    }
 }
