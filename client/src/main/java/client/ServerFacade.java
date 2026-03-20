@@ -3,6 +3,7 @@ package client;
 import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -37,5 +38,15 @@ public class ServerFacade {
     private String readBody(InputStream stream) throws IOException {
         if (stream == null) return "";
         return new String(stream.readAllBytes());
+    }
+    public record AuthData(String authToken, String username) {}
+
+    public AuthData register(String username, String password, String email) throws Exception {
+        var body = Map.of("username", username, "password", password, "email", email);
+        return makeRequest("POST", "/user", null, body, AuthData.class);
+    }
+    public AuthData login(String username, String password) throws Exception {
+        var body = Map.of("username", username, "password", password);
+        return makeRequest("POST", "/session", null, body, AuthData.class);
     }
 }
