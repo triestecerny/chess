@@ -62,4 +62,27 @@ public class ServerFacadeTests {
     void logoutNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.logout("invalidtoken"));
     }
+    @Test
+    void createGamePositive() throws Exception {
+        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
+        facade.createGame(authData.authToken(), "trieste's game");
+    }
+
+    @Test
+    void createGameNegative() throws Exception {
+        assertThrows(Exception.class, () -> facade.createGame("invalidtoken", "trieste's game"));
+    }
+    @Test
+    void listGamesPositive() throws Exception {
+        var authData = facade.register("trieste", "password28", "trieste@gmail.com");
+        facade.createGame(authData.authToken(), "trieste's game");
+        var games = facade.listGames(authData.authToken());
+        assertEquals(1, games.length);
+    }
+
+    @Test
+    void listGamesNegative() throws Exception {
+        assertThrows(Exception.class, () -> facade.listGames("invalidtoken"));
+    }
+
 }
