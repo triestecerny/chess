@@ -31,14 +31,25 @@ public class ServerFacadeTests {
     // one negative and one positive test for register
     @Test
     void registerPositive() throws Exception {
-        var authData = facade.register("player1", "password", "p1@email.com");
+        var authData = facade.register("trieste", "passwor28", "trieste@email.com");
         assertNotNull(authData.authToken());
         assertTrue(authData.authToken().length() > 10);
     }
 
     @Test
     void registerNegative() throws Exception {
-        facade.register("player1", "password", "p1@email.com");
-        assertThrows(Exception.class, () -> facade.register("player1", "password", "p1@email.com"));
+        facade.register("trieste", "password28", "trieste@email.com");
+        assertThrows(Exception.class, () -> facade.register("trieste", "password28", "trieste@email.com"));
+    }
+    @Test
+    void loginPositive() throws Exception {
+        facade.register("trieste", "password28", "trieste@gmail.com");
+        var authData = facade.login("trieste", "password28");
+        assertNotNull(authData.authToken());
+    }
+
+    @Test
+    void loginNegative() throws Exception {
+        assertThrows(Exception.class, () -> facade.login("trieste", "wrongpassword"));
     }
 }
