@@ -78,6 +78,8 @@ public class PostloginUI {
             int gameID = games[gameNumber - 1].gameID();
             String color = tokens[2].toUpperCase();
             facade.joinGame(authToken, gameID, color);
+            boolean isWhite = color.equals("WHITE");
+            ui.BoardDrawer.drawBoard(isWhite);
             return "Joined game as " + color;
         } catch (NumberFormatException e) {
             return "Please enter a valid game number.";
@@ -95,6 +97,7 @@ public class PostloginUI {
             if (gameNumber < 1 || gameNumber > games.length) {
                 return "Invalid game number.";
             }
+            ui.BoardDrawer.drawBoard(true);
             return "Observing game " + gameNumber;
         } catch (NumberFormatException e) {
             return "Please enter a valid game number.";
