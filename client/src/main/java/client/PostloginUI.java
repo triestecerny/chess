@@ -18,6 +18,7 @@ public class PostloginUI {
             case "logout" -> logout();
             case "create" -> createGame(tokens);
             case "list" -> listGames();
+            case "play" -> playGame(tokens);
             default -> "Unknown command. Type 'help' for options.";
         };
     }
@@ -59,6 +60,26 @@ public class PostloginUI {
                 sb.append("\n");
             }
             return sb.toString();
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+    private String playGame(String[] tokens) {
+        if (tokens.length < 3) {
+            return "Usage: play <ID> <WHITE|BLACK>";
+        }
+        try {
+            int gameNumber = Integer.parseInt(tokens[1]);
+            var games = facade.listGames(authToken);
+            if (gameNumber < 1 || gameNumber > games.length) {
+                return "Invalid game number.";
+            }
+            int gameID = games[gameNumber - 1].gameID();
+            String color = tokens[2].toUpperCase();
+            facade.joinGame(authToken, gameID, color);
+            return "Joined game as " + color;
+        } catch (NumberFormatException e) {
+            return "Please enter a valid game number.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
