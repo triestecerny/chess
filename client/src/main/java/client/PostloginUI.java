@@ -15,7 +15,7 @@ public class PostloginUI {
         var cmd = tokens[0];
         return switch (cmd) {
             case "help" -> help();
-            case "logout" -> "Logged out!";
+            case "logout" -> logout();
             default -> "Unknown command. Type 'help' for options.";
         };
     }
@@ -34,5 +34,14 @@ public class PostloginUI {
 
     public boolean isLoggedOut() {
         return loggedOut;
+    }
+    private String logout() {
+        try {
+            facade.logout(authToken);
+            loggedOut = true;
+            return "logged out";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 }
