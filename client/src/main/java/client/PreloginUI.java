@@ -34,6 +34,7 @@ public class PreloginUI {
         }
         try {
             var authData = facade.register(tokens[1], tokens[2], tokens[3]);
+            authToken = authData.authToken();
             return "Registered and logged in as " + authData.username();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
@@ -46,9 +47,19 @@ public class PreloginUI {
         }
         try {
             var authData = facade.login(tokens[1], tokens[2]);
+            authToken = authData.authToken();
             return "Logged in as " + authData.username();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
+    }
+    private String authToken = null;
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public boolean isLoggedIn() {
+        return authToken != null;
     }
 }
