@@ -62,4 +62,7 @@ public class PreloginUI {
     public boolean isLoggedIn() {
         return authToken != null;
     }
+    public void clearAuth() {
+        authToken = null;
+    }
 }

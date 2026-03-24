@@ -23,11 +23,16 @@ public class PostloginUI {
     private String help() {
         return """
                 - create <NAME> - create a game
-                - list - list all games
-                - play <ID> <WHITE|BLACK> - join a game
-                - observe <ID> - observe a game
-                - logout - logout
+                - list - games
+                - play <ID> <WHITE|BLACK> - a game
+                - observe <ID> - a game
+                - logout - when you are done
                 - help - with possible commands
                 """;
+    }
+    private boolean loggedOut = false;
+
+    public boolean isLoggedOut() {
+        return loggedOut;
     }
 }
