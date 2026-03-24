@@ -16,6 +16,7 @@ public class PostloginUI {
         return switch (cmd) {
             case "help" -> help();
             case "logout" -> logout();
+            case "create" -> createGame(tokens);
             default -> "Unknown command. Type 'help' for options.";
         };
     }
@@ -29,6 +30,17 @@ public class PostloginUI {
                 - logout - when you are done
                 - help - with possible commands
                 """;
+    }
+    private String createGame(String[] tokens) {
+        if (tokens.length < 2) {
+            return "Usage: create <NAME>";
+        }
+        try {
+            facade.createGame(authToken, tokens[1]);
+            return "Game created: " + tokens[1];
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
     private boolean loggedOut = false;
 
