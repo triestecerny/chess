@@ -17,6 +17,7 @@ public class PostloginUI {
             case "help" -> help();
             case "logout" -> logout();
             case "create" -> createGame(tokens);
+            case "list" -> listGames();
             default -> "Unknown command. Type 'help' for options.";
         };
     }
@@ -38,6 +39,26 @@ public class PostloginUI {
         try {
             facade.createGame(authToken, tokens[1]);
             return "Game created: " + tokens[1];
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    private String listGames() {
+        try {
+            var games = facade.listGames(authToken);
+            if (games.length == 0) {
+                return "No games available.";
+            }
+            var sb = new StringBuilder();
+            for (int i = 0; i < games.length; i++) {
+                var game = games[i];
+                sb.append(i + 1).append(". ").append(game.gameName());
+                sb.append(" | White: ").append(game.whiteUsername() != null ? game.whiteUsername() : "open");
+                sb.append(" | Black: ").append(game.blackUsername() != null ? game.blackUsername() : "open");
+                sb.append("\n");
+            }
+            return sb.toString();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
