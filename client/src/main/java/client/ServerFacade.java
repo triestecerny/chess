@@ -31,12 +31,16 @@ public class ServerFacade {
         if (http.getResponseCode() >= 300) {
             throw new Exception("Error: " + readBody(http.getErrorStream()));
         }
-        if (responseClass == null) return null;
+        if (responseClass == null){
+            return null;
+        }
         return gson.fromJson(readBody(http.getInputStream()), responseClass);
     }
 
     private String readBody(InputStream stream) throws IOException {
-        if (stream == null) return "";
+        if (stream == null){
+            return "";
+        }
         return new String(stream.readAllBytes());
     }
     public void clear() throws Exception {

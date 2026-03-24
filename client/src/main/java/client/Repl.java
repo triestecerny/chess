@@ -34,7 +34,9 @@ public class Repl {
                 var line = scanner.nextLine().trim().toLowerCase();
                 var result = preloginUI.eval(line);
                 System.out.println(result);
-                if (line.equals("quit")) break;
+                if (line.equals("quit")){
+                    break;
+                }
             }
         }
     }
