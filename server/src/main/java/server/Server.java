@@ -35,6 +35,23 @@ public class Server {
         // start javalin
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        //wire to websocket
+        WebSocketHandler wsHandler = new WebSocketHandler(dataAccess);
+        javalin.ws("/ws", ws -> {
+            ws.onMessage(ctx -> {
+                try {
+                    // fix session
+                    wsHandler.onMessage(ctx.session, ctx.message());
+                } catch (Exception e) {
+                    System.out.println("Error handling message: " + e.getMessage());
+                }
+            });
+            ws.onClose(ctx -> {
+                wsHandler.onClose(ctx.session, ctx.status(), ctx.reason());
+            });
+            ws.onError(ctx -> System.out.println("WS Error: " + ctx.error().getMessage()));
+        });
+
         // Register endpoints here
         javalin.delete("/db", this::clear);
         javalin.post("/user", this::register);
