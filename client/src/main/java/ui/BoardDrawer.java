@@ -7,8 +7,11 @@ import java.util.HashSet;
 public class BoardDrawer {
 
     public static void drawBoard(ChessBoard board, boolean isWhitePerspective, Collection<ChessMove> legalMoves) {
-        System.out.println(); //space for the board better looking
-        // Extract end positions for highlighting
+        drawBoard(board, isWhitePerspective, legalMoves, null);
+    }
+
+    public static void drawBoard(ChessBoard board, boolean isWhitePerspective,
+                                 Collection<ChessMove> legalMoves, ChessPosition selectedPos) {
         HashSet<ChessPosition> highlightedSquares = new HashSet<>();
         if (legalMoves != null) {
             for (ChessMove move : legalMoves) {
@@ -26,6 +29,7 @@ public class BoardDrawer {
         int colEnd = isWhitePerspective ? 9 : 0;
         int colStep = isWhitePerspective ? 1 : -1;
 
+        System.out.println();
         printColumnHeaders(cols, colStart, colEnd, colStep);
 
         for (int r = rowStart; r != rowEnd; r += rowStep) {
@@ -33,10 +37,10 @@ public class BoardDrawer {
             for (int c = colStart; c != colEnd; c += colStep) {
                 ChessPosition pos = new ChessPosition(r, c);
                 ChessPiece piece = board.getPiece(pos);
+                boolean isSelected = selectedPos != null && selectedPos.equals(pos);
+                boolean isHighlighted = highlightedSquares.contains(pos);
 
-                //check if highlighted
-                String bg = getSquareColor(r, c, highlightedSquares.contains(pos));
-
+                String bg = getSquareColor(r, c, isHighlighted, isSelected);
                 String pieceStr = getPieceString(piece);
                 String pieceColor = getPieceColor(piece);
 
@@ -56,11 +60,10 @@ public class BoardDrawer {
         System.out.println();
     }
 
-    private static String getSquareColor(int r, int c, boolean isHighlighted) {
-        if (isHighlighted) {
-            return "\u001b[42m"; // green for highlights
-        }
-        return (r + c) % 2 != 0 ? "\u001b[47m" : "\u001b[100m"; // gray
+    private static String getSquareColor(int r, int c, boolean isHighlighted, boolean isSelected) {
+        if (isSelected) return "\u001b[43m";
+        if (isHighlighted) return "\u001b[42m";
+        return (r + c) % 2 != 0 ? "\u001b[47m" : "\u001b[100m";
     }
 
     private static String getPieceString(ChessPiece piece) {

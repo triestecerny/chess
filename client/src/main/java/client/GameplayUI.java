@@ -140,7 +140,7 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
             ChessPosition pos = parsePosition(tokens[1]);
             Collection<ChessMove> moves = currentGame.validMoves(pos);
             boolean whiteBottom = !"BLACK".equals(playerColor);
-            ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, moves);
+            ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, moves, pos);
 
             return null;
         } catch (Exception e) {
