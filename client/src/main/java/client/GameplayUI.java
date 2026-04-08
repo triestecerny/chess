@@ -39,7 +39,7 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
             case LOAD_GAME -> {
                 currentGame = ((LoadGameMessage) message).getGame().game();
                 boolean whiteBottom = !"BLACK".equals(playerColor);
-                // Pass the board, perspective no need for highlights
+                // Pass the board and perspective no need for highlights
                 ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
             }
             case NOTIFICATION -> System.out.println("\n*** " + ((NotificationMessage) message).getMessage() + " ***");

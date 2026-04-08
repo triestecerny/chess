@@ -75,6 +75,6 @@ public class ServerFacade {
         makeRequest("PUT", "/game", authToken, body, null);
     }
     public String getServerUrl() {
-        return this.serverUrl; // localhost8080
+        return serverUrl;// localhost8080
     }
 }
