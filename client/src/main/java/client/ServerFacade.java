@@ -74,4 +74,7 @@ public class ServerFacade {
         var body = Map.of("gameID", gameID, "playerColor", playerColor);
         makeRequest("PUT", "/game", authToken, body, null);
     }
+    public String getServerUrl() {
+        return this.serverUrl; // localhost8080
+    }
 }

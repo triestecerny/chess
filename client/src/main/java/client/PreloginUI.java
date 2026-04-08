@@ -3,22 +3,15 @@ package client;
 public class PreloginUI {
 
     private final ServerFacade facade;
+    private String authToken = null;
 
     public PreloginUI(ServerFacade facade) {
         this.facade = facade;
     }
 
-    private String help() {
-        return """
-                - register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-                - login <USERNAME> <PASSWORD> - to play chess
-                - quit - playing chess
-                - help - with possible commands
-                """;
-    }
     public String eval(String input) {
         var tokens = input.split(" ");
-        var cmd = tokens[0];
+        var cmd = tokens[0].toLowerCase();
         return switch (cmd) {
             case "help" -> help();
             case "quit" -> "Goodbye!";
@@ -26,6 +19,15 @@ public class PreloginUI {
             case "login" -> login(tokens);
             default -> "Unknown command. Type 'help' for options.";
         };
+    }
+
+    private String help() {
+        return """
+                - register <USERNAME> <PASSWORD> <EMAIL> - create an account
+                - login <USERNAME> <PASSWORD> - start playing
+                - quit - exit the application
+                - help - show possible commands
+                """;
     }
 
     private String register(String[] tokens) {
@@ -37,7 +39,7 @@ public class PreloginUI {
             authToken = authData.authToken();
             return "Registered and logged in as " + authData.username();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return "Error: Registration failed.";
         }
     }
 
@@ -50,10 +52,9 @@ public class PreloginUI {
             authToken = authData.authToken();
             return "Logged in as " + authData.username();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return "Error: Login failed. Check your username and password.";
         }
     }
-    private String authToken = null;
 
     public String getAuthToken() {
         return authToken;
