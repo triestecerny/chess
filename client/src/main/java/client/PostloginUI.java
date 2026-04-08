@@ -83,7 +83,6 @@ public class PostloginUI {
             int gameID = lastGames[gameNumber - 1].gameID();
             String color = tokens[2].toUpperCase();
             facade.joinGame(authToken, gameID, color);
-            facade.joinGame(authToken, gameID, color);
             new GameplayUI(facade.getServerUrl(), authToken, gameID, color).run(new java.util.Scanner(System.in));
             return "Joined game as " + color;} catch (NumberFormatException e) {
             return "Please enter a valid game number.";

@@ -19,12 +19,12 @@ public class WebSocketCommunicator {
     public interface ServerMessageObserver {
         void onMessage(ServerMessage message);
     }
-
     public WebSocketCommunicator(String serverUrl, ServerMessageObserver observer) throws Exception {
         this.observer = observer;
         URI uri = new URI(serverUrl.replace("http", "ws") + "/ws");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         container.connectToServer(this, uri);
+        Thread.sleep(300);
     }
 
     @OnOpen
