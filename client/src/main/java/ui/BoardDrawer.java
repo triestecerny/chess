@@ -7,6 +7,7 @@ import java.util.HashSet;
 public class BoardDrawer {
 
     public static void drawBoard(ChessBoard board, boolean isWhitePerspective, Collection<ChessMove> legalMoves) {
+        System.out.println(); //space for the board better looking
         // Extract end positions for highlighting
         HashSet<ChessPosition> highlightedSquares = new HashSet<>();
         if (legalMoves != null) {
