@@ -25,8 +25,10 @@ public class UserService {
             throw new DataAccessException("Error: already taken");
         }
 
-        // save
-        dataAccess.createUser(user);
+        // hash and then ave
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        UserData hashedUser = new UserData(user.username(), hashedPassword, user.email());
+        dataAccess.createUser(hashedUser);
 
         // AuthToken
         String authToken = UUID.randomUUID().toString();
