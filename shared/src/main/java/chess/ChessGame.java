@@ -256,4 +256,14 @@ public class ChessGame {
     public boolean isResigned() {
         return resigned;
     }
+    // helper for valid move
+    public boolean isValidMove(ChessMove move) {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null || piece.getTeamColor() != turn) {
+            return false;
+        }
+
+        Collection<ChessMove> moves = validMoves(move.getStartPosition(), board);
+        return moves != null && moves.contains(move);
+    }
 }
