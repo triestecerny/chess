@@ -68,6 +68,7 @@ public class PostloginUI {
             return "Error: Could not get game list";
         }
     }
+
     private String playGame(String[] tokens) {
         if (tokens.length < 3) {
             return "Usage: play <ID> <WHITE|BLACK>";
@@ -84,7 +85,8 @@ public class PostloginUI {
             String color = tokens[2].toUpperCase();
             facade.joinGame(authToken, gameID, color);
             new GameplayUI(facade.getServerUrl(), authToken, gameID, color).run(new java.util.Scanner(System.in));
-            return "Joined game as " + color;} catch (NumberFormatException e) {
+            return null;
+        } catch (NumberFormatException e) {
             return "Please enter a valid game number.";
         } catch (Exception e) {
             return "Error: Could not join game";
@@ -105,7 +107,7 @@ public class PostloginUI {
             }
             int gameID = lastGames[gameNumber - 1].gameID();
             new GameplayUI(facade.getServerUrl(), authToken, gameID, null).run(new java.util.Scanner(System.in));
-            return "Observing game " + gameNumber;
+            return null;
         } catch (NumberFormatException e) {
             return "Please enter a valid game number.";
         } catch (Exception e) {
@@ -116,6 +118,7 @@ public class PostloginUI {
     public boolean isLoggedOut() {
         return loggedOut;
     }
+
     private String logout() {
         try {
             facade.logout(authToken);

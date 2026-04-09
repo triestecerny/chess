@@ -17,18 +17,17 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     private final WebSocketCommunicator ws;
     private final String authToken;
     private final int gameID;
-    private final String playerColor; // white black or null
+    private final String playerColor;
     private final Gson gson = new Gson();
     private ChessGame currentGame;
     private boolean inGame = true;
+    private String currentTurn;
 
     public GameplayUI(String serverUrl, String authToken, int gameID, String playerColor) throws Exception {
         this.authToken = authToken;
         this.gameID = gameID;
         this.playerColor = playerColor;
         this.ws = new WebSocketCommunicator(serverUrl, this);
-
-        // send CONNECT
         UserGameCommand connect = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         ws.sendMessage(gson.toJson(connect));
     }
@@ -38,13 +37,35 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
         switch (message.getServerMessageType()) {
             case LOAD_GAME -> {
                 currentGame = ((LoadGameMessage) message).getGame().game();
+                currentTurn = currentGame.getTeamTurn().name();
                 boolean whiteBottom = !"BLACK".equals(playerColor);
-                // Pass the board and perspective no need for highlights
                 ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
+                System.out.println("It is " + currentTurn + "'s turn.");
                 System.out.print("[game] >>> ");
             }
-            case NOTIFICATION -> System.out.println("\n*** " + ((NotificationMessage) message).getMessage() + " ***");
-            case ERROR -> System.out.println("\nError: " + ((ErrorMessage) message).getErrorMessage());
+            case NOTIFICATION -> {
+                String note = ((NotificationMessage) message).getMessage();
+                System.out.println("\n[NOTIFICATION] " + note);
+
+                if (message instanceof LoadGameMessage loadMsg) {
+                    currentGame = loadMsg.getGame().game();
+                    currentTurn = currentGame.getTeamTurn().name();
+                    boolean whiteBottom = !"BLACK".equals(playerColor);
+                    ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
+                } else if (currentGame != null) {
+                    currentTurn = currentGame.getTeamTurn().name();
+                    boolean whiteBottom = !"BLACK".equals(playerColor);
+                    ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
+                }
+
+                System.out.println("It is " + currentTurn + "'s turn.");
+                System.out.print("[game] >>> ");
+            }
+            case ERROR -> {
+                String msg = ((ErrorMessage) message).getErrorMessage();
+                msg = msg.replaceFirst("(?i)^error:?\\s*", "");
+                System.out.println("\nError: " + msg);
+            }
         }
     }
 
@@ -61,7 +82,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private String eval(String input, Scanner scanner) {
-        var tokens = input.split(" ");
+        input = input.toLowerCase().trim();
+        input = input.replace(" to ", " ");
+        var tokens = input.split("\\s+");
         var cmd = tokens[0].toLowerCase();
         return switch (cmd) {
             case "help" -> help();
@@ -86,9 +109,7 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private String redraw() {
-        if (currentGame == null) {
-            return "No game loaded yet.";
-        }
+        if (currentGame == null) return "No game loaded yet.";
         boolean whiteBottom = !"BLACK".equals(playerColor);
         ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
         return null;
@@ -98,56 +119,55 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
         try {
             UserGameCommand cmd = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             ws.sendMessage(gson.toJson(cmd));
+            Thread.sleep(50);
             ws.close();
         } catch (Exception e) {
-            System.out.println("Warning: " + e.getMessage());
+            if (!e.getMessage().contains("closed")) {
+                System.out.println("Warning: " + e.getMessage());
+            }
         }
         inGame = false;
         return "You left the game.";
     }
 
     private String makeMove(String[] tokens) {
-        if (tokens.length < 3) {
-            return "Usage: move <FROM> <TO> (e.g. move e2 e4)";
-        }
+        if (tokens.length < 3) return "Error: Usage -> move <from> <to>";
+        if (!playerColor.equalsIgnoreCase(currentTurn)) return "Error: It's not your turn. It is " + currentTurn + "'s turn.";
+
         try {
             ChessPosition from = parsePosition(tokens[1]);
             ChessPosition to = parsePosition(tokens[2]);
             ChessPiece.PieceType promotion = null;
-            if (tokens.length >= 4) {
-                promotion = parsePromotion(tokens[3]);
-            }
+            if (tokens.length >= 4) promotion = parsePromotion(tokens[3]);
             ChessMove move = new ChessMove(from, to, promotion);
+
+            if (!currentGame.isValidMove(move)) return "Error: invalid move. Try again.";
+
             MakeMoveCommand cmd = new MakeMoveCommand(authToken, gameID, move);
             ws.sendMessage(gson.toJson(cmd));
+
             return null;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return "Error: Could not send move. Connection issue.";
         }
     }
 
     private String resign(Scanner scanner) {
         System.out.print("Are you sure you want to resign? (yes/no): ");
         String confirm = scanner.nextLine().trim().toLowerCase();
-        if (!confirm.equals("yes")) {
-            return "Resign cancelled.";
-        }
+        if (!confirm.equals("yes")) return "Resign cancelled.";
         try {
             UserGameCommand cmd = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
             ws.sendMessage(gson.toJson(cmd));
             return null;
         } catch (Exception e) {
-            return "Error resigning: " + e.getMessage();
+            return "Error: Could not send resign request.";
         }
     }
 
     private String highlight(String[] tokens) {
-        if (tokens.length < 2) {
-            return "Usage: highlight <SQUARE> (e.g. highlight e2)";
-        }
-        if (currentGame == null) {
-            return "No game loaded yet.";
-        }
+        if (tokens.length < 2) return "Usage: highlight <SQUARE> (e.g. highlight e2)";
+        if (currentGame == null) return "No game loaded yet.";
         try {
             ChessPosition pos = parsePosition(tokens[1]);
             Collection<ChessMove> moves = currentGame.validMoves(pos);
@@ -160,9 +180,8 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private ChessPosition parsePosition(String s) {
-        if (s.length() != 2) {
-            throw new IllegalArgumentException("Invalid position: " + s);
-        }
+        if (s.length() != 2 || s.charAt(0) < 'a' || s.charAt(0) > 'h'
+                || !Character.isDigit(s.charAt(1))) throw new IllegalArgumentException("Invalid position: " + s);
         int col = s.charAt(0) - 'a' + 1;
         int row = Character.getNumericValue(s.charAt(1));
         return new ChessPosition(row, col);

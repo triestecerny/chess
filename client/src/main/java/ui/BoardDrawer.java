@@ -89,6 +89,7 @@ public class BoardDrawer {
         if (piece == null) {
             return "";
         }
-        return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "\u001b[31m" : "\u001b[34m";
+        //dark blue so it is visible through the green
+        return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "\u001b[31m" : "\u001b[1;34m";
     }
 }

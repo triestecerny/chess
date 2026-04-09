@@ -24,7 +24,7 @@ public class Repl {
                 System.out.print("[LOGGED_IN] >>> ");
                 var line = scanner.nextLine().trim().toLowerCase();
                 var result = postloginUI.eval(line);
-                System.out.println(result);
+                if (result != null) System.out.println(result);
                 if (postloginUI.isLoggedOut()) {
                     preloginUI.clearAuth();
                     postloginUI = null;
