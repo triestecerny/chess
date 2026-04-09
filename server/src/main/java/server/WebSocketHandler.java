@@ -52,10 +52,14 @@ public class WebSocketHandler {
 
     private void handleConnect(Session session, UserGameCommand command) throws Exception {
         String username = getUsernameOrError(session, command.getAuthToken());
-        if (username == null) return;
+        if (username == null) {
+            return;
+        }
 
         GameData game = getGameOrError(session, command.getGameID());
-        if (game == null) return;
+        if (game == null) {
+            return;
+        }
 
         addSession(command.getGameID(), username, session);
         sendMessage(session, gson.toJson(new LoadGameMessage(game)));
@@ -67,10 +71,14 @@ public class WebSocketHandler {
 
     private void handleMakeMove(Session session, MakeMoveCommand command) throws Exception {
         String username = getUsernameOrError(session, command.getAuthToken());
-        if (username == null) return;
+        if (username == null) {
+            return;
+        }
 
         GameData game = getGameOrError(session, command.getGameID());
-        if (game == null) return;
+        if (game == null) {
+            return;
+        }
 
         String color = getPlayerColor(game, username);
         if (color == null) {
@@ -104,8 +112,10 @@ public class WebSocketHandler {
         String moveDesc = move.getStartPosition().toString() + " -> " + move.getEndPosition().toString();
         broadcastExcept(command.getGameID(), username, new NotificationMessage(username + " moved " + moveDesc));
 
-        ChessGame.TeamColor opponent = turn == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
-        String opponentName = opponent == ChessGame.TeamColor.WHITE ? game.whiteUsername() : game.blackUsername();
+        ChessGame.TeamColor opponent = turn == ChessGame.TeamColor.WHITE
+                ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        String opponentName = opponent == ChessGame.TeamColor.WHITE
+                ? game.whiteUsername() : game.blackUsername();
 
         if (game.game().isInCheckmate(opponent)) {
             broadcastAll(command.getGameID(), new NotificationMessage(opponentName + " is in checkmate!"));
@@ -118,10 +128,14 @@ public class WebSocketHandler {
 
     private void handleLeave(Session session, UserGameCommand command) throws Exception {
         String username = getUsernameOrError(session, command.getAuthToken());
-        if (username == null) return;
+        if (username == null) {
+            return;
+        }
 
         GameData game = getGameOrError(session, command.getGameID());
-        if (game == null) return;
+        if (game == null) {
+            return;
+        }
 
         if (username.equals(game.whiteUsername()) || username.equals(game.blackUsername())) {
             String newWhite = username.equals(game.whiteUsername()) ? null : game.whiteUsername();
@@ -135,10 +149,14 @@ public class WebSocketHandler {
 
     private void handleResign(Session session, UserGameCommand command) throws Exception {
         String username = getUsernameOrError(session, command.getAuthToken());
-        if (username == null) return;
+        if (username == null) {
+            return;
+        }
 
         GameData game = getGameOrError(session, command.getGameID());
-        if (game == null) return;
+        if (game == null) {
+            return;
+        }
 
         if (getPlayerColor(game, username) == null) {
             sendMessage(session, gson.toJson(new ErrorMessage("Error: observers cannot resign")));
@@ -193,8 +211,12 @@ public class WebSocketHandler {
     }
 
     private String getPlayerColor(GameData game, String username) {
-        if (username.equals(game.whiteUsername())) return "WHITE";
-        if (username.equals(game.blackUsername())) return "BLACK";
+        if (username.equals(game.whiteUsername())) {
+            return "WHITE";
+        }
+        if (username.equals(game.blackUsername())) {
+            return "BLACK";
+        }
         return null;
     }
 
@@ -204,7 +226,9 @@ public class WebSocketHandler {
 
     private void removeSession(int gameID, String username) {
         Map<String, Session> sessions = gameSessions.get(gameID);
-        if (sessions != null) sessions.remove(username);
+        if (sessions != null) {
+            sessions.remove(username);
+        }
     }
 
     private void sendMessage(Session session, String message) throws IOException {

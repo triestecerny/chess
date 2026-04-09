@@ -17,7 +17,7 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     private final WebSocketCommunicator ws;
     private final String authToken;
     private final int gameID;
-    private final String playerColor; // "WHITE", "BLACK", or null for observer
+    private final String playerColor; // white black or null
     private final Gson gson = new Gson();
     private ChessGame currentGame;
     private boolean inGame = true;
@@ -54,7 +54,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
             System.out.print("[game] >>> ");
             String input = scanner.nextLine().trim();
             String result = eval(input, scanner);
-            if (result != null) System.out.println(result);
+            if (result != null) {
+                System.out.println(result);
+            }
         }
     }
 
@@ -84,7 +86,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private String redraw() {
-        if (currentGame == null) return "No game loaded yet.";
+        if (currentGame == null) {
+            return "No game loaded yet.";
+        }
         boolean whiteBottom = !"BLACK".equals(playerColor);
         ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, null);
         return null;
@@ -103,7 +107,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private String makeMove(String[] tokens) {
-        if (tokens.length < 3) return "Usage: move <FROM> <TO> (e.g. move e2 e4)";
+        if (tokens.length < 3) {
+            return "Usage: move <FROM> <TO> (e.g. move e2 e4)";
+        }
         try {
             ChessPosition from = parsePosition(tokens[1]);
             ChessPosition to = parsePosition(tokens[2]);
@@ -123,7 +129,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     private String resign(Scanner scanner) {
         System.out.print("Are you sure you want to resign? (yes/no): ");
         String confirm = scanner.nextLine().trim().toLowerCase();
-        if (!confirm.equals("yes")) return "Resign cancelled.";
+        if (!confirm.equals("yes")) {
+            return "Resign cancelled.";
+        }
         try {
             UserGameCommand cmd = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
             ws.sendMessage(gson.toJson(cmd));
@@ -134,14 +142,17 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private String highlight(String[] tokens) {
-        if (tokens.length < 2) return "Usage: highlight <SQUARE> (e.g. highlight e2)";
-        if (currentGame == null) return "No game loaded yet.";
+        if (tokens.length < 2) {
+            return "Usage: highlight <SQUARE> (e.g. highlight e2)";
+        }
+        if (currentGame == null) {
+            return "No game loaded yet.";
+        }
         try {
             ChessPosition pos = parsePosition(tokens[1]);
             Collection<ChessMove> moves = currentGame.validMoves(pos);
             boolean whiteBottom = !"BLACK".equals(playerColor);
             ui.BoardDrawer.drawBoard(currentGame.getBoard(), whiteBottom, moves, pos);
-
             return null;
         } catch (Exception e) {
             return "Error: " + e.getMessage();
@@ -149,7 +160,9 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
     }
 
     private ChessPosition parsePosition(String s) {
-        if (s.length() != 2) throw new IllegalArgumentException("Invalid position: " + s);
+        if (s.length() != 2) {
+            throw new IllegalArgumentException("Invalid position: " + s);
+        }
         int col = s.charAt(0) - 'a' + 1;
         int row = Character.getNumericValue(s.charAt(1));
         return new ChessPosition(row, col);

@@ -104,7 +104,8 @@ public class PostloginUI {
                 return "Invalid game number.";
             }
             int gameID = lastGames[gameNumber - 1].gameID();
-            new GameplayUI(facade.getServerUrl(), authToken, gameID, null).run(new java.util.Scanner(System.in));return "Observing game " + gameNumber;
+            new GameplayUI(facade.getServerUrl(), authToken, gameID, null).run(new java.util.Scanner(System.in));
+            return "Observing game " + gameNumber;
         } catch (NumberFormatException e) {
             return "Please enter a valid game number.";
         } catch (Exception e) {

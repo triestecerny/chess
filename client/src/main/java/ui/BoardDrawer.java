@@ -72,7 +72,9 @@ public class BoardDrawer {
     }
 
     private static String getPieceString(ChessPiece piece) {
-        if (piece == null) return " ";
+        if (piece == null) {
+            return " ";
+        }
         return switch (piece.getPieceType()) {
             case PAWN -> "P";
             case ROOK -> "R";
@@ -84,7 +86,9 @@ public class BoardDrawer {
     }
 
     private static String getPieceColor(ChessPiece piece) {
-        if (piece == null) return "";
+        if (piece == null) {
+            return "";
+        }
         return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "\u001b[31m" : "\u001b[34m";
     }
 }
