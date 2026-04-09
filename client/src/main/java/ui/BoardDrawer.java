@@ -61,9 +61,14 @@ public class BoardDrawer {
     }
 
     private static String getSquareColor(int r, int c, boolean isHighlighted, boolean isSelected) {
-        if (isSelected) return "\u001b[43m";
-        if (isHighlighted) return "\u001b[42m";
-        return (r + c) % 2 != 0 ? "\u001b[47m" : "\u001b[100m";
+        boolean lightSquare = (r + c) % 2 != 0;
+        if (isSelected) {
+            return lightSquare ? "\u001b[103m" : "\u001b[43m";
+        }
+        if (isHighlighted) {
+            return lightSquare ? "\u001b[102m" : "\u001b[42m";
+        }
+        return lightSquare ? "\u001b[107m" : "\u001b[40m"; // bright white / true black
     }
 
     private static String getPieceString(ChessPiece piece) {

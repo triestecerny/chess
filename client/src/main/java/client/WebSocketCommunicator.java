@@ -24,7 +24,14 @@ public class WebSocketCommunicator {
         URI uri = new URI(serverUrl.replace("http", "ws") + "/ws");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         container.connectToServer(this, uri);
-        Thread.sleep(300);
+        int attempts = 0;
+        while (session == null && attempts < 10) {
+            Thread.sleep(100);
+            attempts++;
+        }
+        if (session == null) {
+            throw new Exception("Could not establish WebSocket connection");
+        }
     }
 
     @OnOpen

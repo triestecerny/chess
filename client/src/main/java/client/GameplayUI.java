@@ -95,11 +95,11 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver {
             UserGameCommand cmd = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             ws.sendMessage(gson.toJson(cmd));
             ws.close();
-            inGame = false;
-            return "You left the game.";
         } catch (Exception e) {
-            return "Error leaving: " + e.getMessage();
+            System.out.println("Warning: " + e.getMessage());
         }
+        inGame = false;
+        return "You left the game.";
     }
 
     private String makeMove(String[] tokens) {
