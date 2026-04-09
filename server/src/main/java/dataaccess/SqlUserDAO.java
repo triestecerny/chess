@@ -1,10 +1,9 @@
 package dataaccess;
 
 import model.UserData;
-import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 
-public class SqlUserDAO{
+public class SqlUserDAO {
 
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE TABLE user";
@@ -18,17 +17,11 @@ public class SqlUserDAO{
     }
 
     public void createUser(UserData user) throws DataAccessException {
-        // before saving
-        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-
-        // start SQL
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-
-        // go
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, user.username());
-                ps.setString(2, hashedPassword);
+                ps.setString(2, user.password()); // already hashed by UserService
                 ps.setString(3, user.email());
                 ps.executeUpdate();
             }
