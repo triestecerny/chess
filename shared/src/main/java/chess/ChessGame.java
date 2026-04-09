@@ -246,4 +246,14 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    private boolean resigned = false;
+
+    public void setResigned(boolean resigned) {
+        this.resigned = resigned;
+    }
+
+    public boolean isResigned() {
+        return resigned;
+    }
 }
